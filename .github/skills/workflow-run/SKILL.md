@@ -67,6 +67,7 @@ Requirements:
   - `reviews/implementation/round-XX.md`
   - `reviews/final/round-XX.md`
 - keep repo markdown artifacts sufficient for another operator or orchestrator session to resume the workflow without prior chat history
+- keep `idea.md`, `spec.md`, and `plan.md` as current-state source artifacts; use review rounds for decision trees, changed recommendations, rejected options, and reviewer disagreement
 - if a runtime-specific role registry exists, resolve stage-to-persona bindings through it and record the actual bindings used
 - if a required concrete binding is missing and there is no valid substitute, stop and tell the user instead of silently inventing a replacement
 
@@ -78,7 +79,7 @@ Requirements:
 - `implement-plan`: operator `Software Engineer`
 - `implementation-review`: reviewers `Software Architect`, `Security Engineer`, and `QA Engineer`
 - `final-review`: reviewers `Product Manager` or `Product Strategist`, `Software Architect`, and `QA Engineer`
-- docs close-out: operator `Documentation Maintainer`
+- docs close-out (`docs-closeout` binding): operator `Documentation Maintainer`
 
 Reviewer-count rule:
 - idea, spec, and plan reviews always use exactly two substantive reviewers plus one skeptic
@@ -89,7 +90,7 @@ Reviewer-count rule:
 
 - when a runtime-specific registry exists, resolve each stage to the assigned personas, default concrete agent names, and allowed substitutions
 - record stage-to-persona and persona-to-agent bindings in `run.md`
-- if a preferred agent is unavailable but an allowed substitute exists, record the substitution and continue
+- if a preferred agent is unavailable but an allowed substitute with a concrete substitution agent exists, record the substitution and continue
 - if a required persona has no usable binding, stop and ask the user instead of silently weakening the review
 - official operators and reviewers must be spawned as the resolved concrete persona agent, or an explicitly allowed substitute, and the spawned agent type must match before the output is treated as official workflow work
 - for Codex, use the registry `agent` value as the spawned subagent `agent_type`; prompt text such as "you are {Persona}" does not turn `worker`, `explorer`, or `default` into an official workflow persona
@@ -129,6 +130,7 @@ Use a plain-language startup confirmation such as:
 - if chat context conflicts with repo markdown artifacts, prefer the artifacts and record the discrepancy in `run.md`
 - do not carry accepted decisions, constraints, or clarifications forward as chat-only context; write them into `run.md` or the relevant source artifact before relying on them
 - do not duplicate the same accepted decision across every artifact; write it to the artifact that owns it and point other artifacts to that source when needed
+- fold accepted review outcomes into the owning source artifact as current truth; remove superseded alternatives instead of appending revision history
 
 ## Delegation And Context Budget
 
@@ -139,7 +141,8 @@ Use a plain-language startup confirmation such as:
 - ask subagents to return only decisions, findings, edits made, and unresolved blockers
 - prohibit long restatements of artifacts, chat history, or reviewer transcripts
 - for focused re-reviews, ask reviewers to inspect only the prior finding, current artifact, and changed area
-- target saved review rounds at roughly 250-500 words unless material findings require more
+- keep saved review rounds compact unless material findings require more
+- keep source artifacts concise by omitting empty sections, stale alternatives, repeated rationale, and history that belongs in review rounds
 - idea, spec, and plan reviews should normally inspect only `run.md` plus the relevant workflow artifacts
 - codebase inspection should be targeted and usually reserved for implementation, implementation-review, final-review fidelity checks, or a specific blocking question
 - generic helper agents may be used only for narrow blocking questions with named paths, symbols, or terms
@@ -149,6 +152,24 @@ Use a plain-language startup confirmation such as:
 - expand the reviewer or helper set only when the added agent has a distinct question that materially affects the next gate
 - after a subagent's output has been captured in the relevant markdown artifact, close or release that subagent when the runtime supports it
 - do not keep completed reviewers or operators alive across user gates unless they are actively needed for the next delegated task
+
+## Operator Progress Checks
+
+Use this protocol when the orchestrator suspects an official operator subagent is stalled, blocked, or taking materially longer than expected, especially during `implement-plan`.
+
+- before reclaiming, replacing, or aborting an official operator, send that operator a bounded progress check
+- ask for current task/file, completed work, active blocker if any, expected time to handoff, and whether a partial handoff is available
+- if the runtime supports a non-interrupting status message, prefer it first; use an interrupting status check only when the orchestrator is otherwise blocked or cleanup is likely
+- if the operator reports credible progress and no material blocker, continue waiting for a reasonable period, then check again if needed
+- if the operator appears stalled, blocked, unresponsive after the progress check window, or unable to provide a useful handoff, prompt the user before changing ownership
+- the user prompt must offer these choices:
+  - continue waiting and check again after a reasonable period
+  - abort the subagent, clean up, and spawn a new official operator to take over
+  - abort the subagent, clean up, and have the orchestrator take over directly
+  - something else, supplied by the user
+- do not silently convert an official operator task into orchestrator-owned work unless the user explicitly selects that fallback
+- record the progress check, response or timeout, user decision, cleanup performed, and any operator substitution or orchestrator takeover in `run.md`
+- if implementation has begun or ownership changes during implementation, record changed areas, partial handoff, validation state, and deviations in `execution.md` when present or when creating it is warranted
 
 ## Execution Loop
 
@@ -165,7 +186,7 @@ Use a plain-language startup confirmation such as:
 11. After the user gate, record feedback, ensure accepted feedback is written into repo markdown artifacts through the owning operator when edits are needed, and re-ground before advancing, looping, or rerouting.
 12. After implementation, run `implementation-review`; if any implementation reviewer requires material changes, route remediation back to the implementation operator and repeat.
 13. After implementation-review approval, run `final-review`; if it finds fidelity gaps, route fixes back to the owning operator and rerun review as needed.
-14. Before docs close-out, run a drift sweep across `idea.md`, `spec.md`, `plan.md`, `execution.md` when present, and latest reviews to catch stale wording after later decisions.
+14. Before docs close-out, run a drift sweep across `idea.md`, `spec.md`, `plan.md`, `execution.md` when present, and latest reviews to catch stale wording after later decisions; source artifacts should show the official current state, while review rounds preserve history.
 15. Delegate docs close-out to the documentation maintainer.
 16. Verify docs close-out, re-ground on final markdown artifacts, ask for final approval, and close the workflow.
 
