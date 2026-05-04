@@ -1,0 +1,97 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PortableMarkdownFormat.Builder.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        d:DesignWidth="1080"
+        d:DesignHeight="720"
+        x:Class="PortableMarkdownFormat.Builder.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Width="1080"
+        Height="720"
+        MinWidth="860"
+        MinHeight="600"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Portable Markdown Format Builder">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Grid Margin="16"
+          RowDefinitions="Auto,Auto,*,Auto"
+          RowSpacing="16">
+        <StackPanel Spacing="4">
+            <TextBlock FontSize="24"
+                       FontWeight="Bold"
+                       Text="Portable Markdown Format Builder" />
+            <TextBlock Opacity="0.75"
+                       Text="Package an existing Markdown folder hierarchy into a portable .pmf archive." />
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Padding="16"
+                BorderBrush="Gray"
+                BorderThickness="1"
+                CornerRadius="8">
+            <Grid ColumnDefinitions="Auto,*,Auto"
+                  RowDefinitions="Auto,Auto,Auto"
+                  ColumnSpacing="12"
+                  RowSpacing="12">
+                <TextBlock Grid.Row="0"
+                           VerticalAlignment="Center"
+                           Text="Source folder" />
+                <TextBox Grid.Row="0"
+                         Grid.Column="1"
+                         IsReadOnly="True"
+                         Text="{Binding SourceFolderPath}" />
+                <Button Grid.Row="0"
+                        Grid.Column="2"
+                        Click="BrowseSourceFolderButton_OnClick"
+                        Content="Browse..." />
+
+                <TextBlock Grid.Row="1"
+                           VerticalAlignment="Center"
+                           Text="Output package" />
+                <TextBox Grid.Row="1"
+                         Grid.Column="1"
+                         Text="{Binding OutputFilePath}" />
+                <Button Grid.Row="1"
+                        Grid.Column="2"
+                        Click="BrowseOutputFileButton_OnClick"
+                        Content="Save as..." />
+
+                <TextBlock Grid.Row="2"
+                           Grid.Column="1"
+                           VerticalAlignment="Center"
+                           Text="{Binding Summary}"
+                           TextWrapping="Wrap" />
+                <Button Grid.Row="2"
+                        Grid.Column="2"
+                        IsEnabled="{Binding CanBuild}"
+                        Click="BuildPackageButton_OnClick"
+                        Content="Build PMF" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2"
+                Padding="16"
+                BorderBrush="Gray"
+                BorderThickness="1"
+                CornerRadius="8">
+            <Grid RowDefinitions="Auto,*"
+                  RowSpacing="12">
+                <TextBlock FontSize="16"
+                           FontWeight="SemiBold"
+                           Text="Files to include" />
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding Files}" />
+            </Grid>
+        </Border>
+
+        <TextBlock Grid.Row="3"
+                   Text="{Binding StatusMessage}"
+                   TextWrapping="Wrap" />
+    </Grid>
+</Window>

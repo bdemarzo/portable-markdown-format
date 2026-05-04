@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PortableMarkdownFormat.Builder/PortableMarkdownFormat.Builder.csproj" />
+    <Project Path="src/PortableMarkdownFormat.Core/PortableMarkdownFormat.Core.csproj" />
+    <Project Path="src/PortableMarkdownFormat.Viewer/PortableMarkdownFormat.Viewer.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PortableMarkdownFormat.Core.Tests/PortableMarkdownFormat.Core.Tests.csproj" />
+  </Folder>
+</Solution>
