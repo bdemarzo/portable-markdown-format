@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\PortableMarkdownFormat.Core\PortableMarkdownFormat.Core.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PortableMarkdownFormat.Core\PortableMarkdownFormat.Core.csproj" />
+  </ItemGroup>
+
+</Project>

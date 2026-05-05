@@ -1,0 +1,39 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PortableMarkdownFormat.Viewer.ViewModels"
+        xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        x:Class="PortableMarkdownFormat.Viewer.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Portable Markdown Format Viewer">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="12" RowDefinitions="Auto,*,Auto" ColumnDefinitions="280,*">
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="12">
+            <Button Content="Open PMF..." Command="{Binding OpenArchiveCommand}" />
+            <TextBlock Text="{Binding CurrentArchiveLabel}" VerticalAlignment="Center" TextWrapping="Wrap" />
+        </StackPanel>
+
+        <Border Grid.Row="1" Grid.Column="0" Margin="0,12,12,12" Padding="8" BorderThickness="1" BorderBrush="Gray">
+            <TreeView ItemsSource="{Binding RootNodes}" SelectedItem="{Binding SelectedNode, Mode=TwoWay}">
+                <TreeView.ItemTemplate>
+                    <TreeDataTemplate x:DataType="vm:ArchiveTreeNodeViewModel" ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding DisplayName}" />
+                    </TreeDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="1" Margin="0,12,0,12" Padding="12" BorderThickness="1" BorderBrush="Gray">
+            <md:MarkdownScrollViewer Markdown="{Binding SelectedMarkdown}" />
+        </Border>
+
+        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding StatusMessage}" TextWrapping="Wrap" />
+    </Grid>
+</Window>

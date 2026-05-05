@@ -1,0 +1,21 @@
+# Build output
+bin/
+obj/
+
+# Test and coverage output
+TestResults/
+coverage*.xml
+coverage*.json
+*.coverage
+*.trx
+
+# IDE and user-specific files
+.vs/
+.idea/
+*.user
+*.rsuser
+*.suo
+
+# NuGet packages
+*.nupkg
+*.snupkg
